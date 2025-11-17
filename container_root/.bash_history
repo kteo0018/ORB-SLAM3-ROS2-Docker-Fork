@@ -498,3 +498,161 @@ ls
 tmux
 ls
 ros2 launch orb_slam3_ros2_wrapper unirobot.launch.py 
+ls
+cd custom_scripts/
+ls
+nano g5t1-launch-pose-gps-logger.sh
+clear
+ls
+chmod +x g5t1-launch-pose-gps-logger.sh 
+clear
+ls
+./g5t1-launch-pose-gps-logger.sh 
+ls
+cd colcon_ws/
+ls
+cd traj1_logs_251114_2252/
+ls
+cd ..
+cleaer
+ls
+rm -rf colcon_ws/
+ls
+clear
+./g5t1-launch-pose-gps-logger.sh 
+ls
+cd colcon_ws/
+ls
+cd traj1_logs_251114_2254/
+ls
+clear
+ls
+clear
+exit
+xeyes
+cd /home/orb/ORB_SLAM3/ && sudo chmod +x build.sh && ./build.sh
+cd /root/colcon_ws/ && colcon build --symlink-install && source install/setup.bash
+ros2 launch orb_slam3_ros2_wrapper unirobot.launch.py 
+clear
+ros2 launch orb_slam3_ros2_wrapper unirobot.launch.py 
+clear
+ls
+ros2 topic list
+ls
+rm atlas.osa 
+ls
+clear
+ls
+gz topic -l
+clear
+ros2 topic list
+ls
+colcon build --symlink-install --packages-select orb_slam3_ros2_wrapper
+source install/setup.bash 
+ls
+cd
+ros2 launch orb_slam3_ros2_wrapper c_rgbd_launch.py
+ls
+rm atlas.osa 
+ls
+clear
+ls
+cd
+ls
+mkdir custom_scripts
+ls
+cd custom_scripts/
+ls
+clear
+nano d1-rebuild-orb-slam3-ros2-wrapper.sh
+clea
+clear
+chmod +x d1-rebuild-orb-slam3-ros2-wrapper.sh 
+ls
+clear
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+clear
+ls
+cd
+ls
+cd custom_scripts/
+./d1
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+ls
+clear
+nano g5c-launch-rgbd.sh
+clear
+ls
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+chmod +x g5c-launch-rgbd.sh 
+ls
+clear
+./g5c-launch-rgbd.sh 
+ls
+cd
+ls
+cd colcon_ws/
+ls
+cd
+cd custom_scripts/
+ls
+cd
+cd colcon_ws/
+ls
+cd
+ls
+cd custom_scripts/
+ls
+nano g5c-launch-rgbd.sh 
+mv g5c-launch-rgbd.sh g5c1-launch-rgbd.sh 
+ls
+clear
+./g5c1-launch-rgbd.sh 
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+./g5c1-launch-rgbd.sh 
+clear
+cd
+cd colcon_ws/
+ls
+cd src/
+ls
+cd orb_slam3_ros2_wrapper/
+ls
+cd scripts/
+ls
+chmox +x traj1_pose_gps_logger.py 
+chmod +x traj1_pose_gps_logger.py 
+ls
+clear
+ls
+cd
+cd custom_scripts/
+ls
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+ls
+clear
+ls
+./g5c1-launch-rgbd.sh 
+ls
+cd
+ls
+cd colcon_ws/
+ls
+rm -rf atlas_251114_220120/
+ls
+rm -rf atlas_simple_forest_251114_215129/
+ls
+rm -rf atlas_251114_225042/
+ls
+clea
+clear
+ls
+cd
+ls
+clear
+cd custom_scripts/
+clear
+ls
+claer
+ls
+exit

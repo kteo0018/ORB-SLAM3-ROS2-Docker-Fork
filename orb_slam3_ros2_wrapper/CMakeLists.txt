@@ -79,6 +79,11 @@ install(DIRECTORY launch params
 DESTINATION share/${PROJECT_NAME}
 )
 
+# MODIFIED: added the below scripts to run in launch file
+install(PROGRAMS scripts/traj1_pose_gps_logger.py
+DESTINATION lib/${PROJECT_NAME}
+)
+
 if(BUILD_TESTING)
   find_package(gtest)
   find_package(ament_cmake_gtest REQUIRED)

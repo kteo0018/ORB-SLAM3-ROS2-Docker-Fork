@@ -1,0 +1,1 @@
+ros2 launch orb_slam3_ros2_wrapper traj1_pose_gps_logger.launch.py
