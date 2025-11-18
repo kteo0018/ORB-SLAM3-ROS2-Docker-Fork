@@ -17,13 +17,13 @@ ORB_SLAM3_RGBD_ROS2:
     # the below parameters are used to adjust the initial pose with respect to the map. 
     # the camera pose maybe translated and rotated with respect to the base_footprint. The wrapper publishes map->base_footprint. Hence this relative transform needs to be accounted.
     # the below transform is the transform from base_footpring -> camera_link
-    robot_x: 0.12     # Camera is 0.12m forward from base_link
-    robot_y: 0.0      # Camera is centered (no Y offset)
-    robot_z: 0.05     # Camera is 0.05m above base_link
-    robot_qx: 0.0     # No rotation around X
-    robot_qy: 0.173648   # Pitch about Y ≈ 20° (0.349066 rad)
-    robot_qz: 0.0     # No rotation around Z
-    robot_qw: 0.9848078  # cos(0.349066/2)
+    robot_x: 0.0         # Gazebo <pose> X is 0
+    robot_y: 0.0         # Gazebo <pose> Y is 0
+    robot_z: 0.10        # Gazebo <pose> Z is 0.10 (10cm above ground, matches)
+    robot_qx: 0.0        # No rotation around X, <pose> is 0
+    robot_qy: 0.7071068  # sin(1.5707 / 2) ≈ 0.7071, 1.5707rad (90deg) pitch about Y (matches <pose>)
+    robot_qz: 0.0        # No rotation around Z, <pose> is 0
+    robot_qw: 0.7071068  # cos(1.5707 / 2) ≈ 0.7071
 
     visualization: true
     odometry_mode: false
