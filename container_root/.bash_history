@@ -656,3 +656,256 @@ ls
 claer
 ls
 exit
+clear
+ls
+cd custom_scripts/
+ls
+clear
+ros2 topic list
+ros2 topic echo /robot/robot_pose_slam
+ros2 topic list
+clear
+ros2 topic list
+ros2 topic echo /world/z_simple_palm_plantation/model/x500_custom_0/link/gps_link/sensor/gps/navsat
+ros2 topic list
+clear
+ls
+cd custom_scripts/
+clear
+ls
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+ls
+clear
+ls
+cd custom_scripts/
+lc
+ls
+clear
+ls
+./g5c1-launch-rgbd.sh 
+clear
+ls
+cd
+ls
+cd colcon_ws/
+ls
+cd
+cd custom_scripts/
+clear
+ls
+./g5c1-launch-rgbd.sh 
+clear
+./g5c1-launch-rgbd.sh 
+clear
+ls
+./g5c1-launch-rgbd.sh 
+clear
+./g5c1-launch-rgbd.sh 
+clear
+ls
+./g5c1-launch-rgbd.sh 
+clear
+./g5c1-launch-rgbd.sh 
+clear
+ls
+clear
+./g5c1-launch-rgbd.sh 
+ls
+cd
+cd colcon_ws/
+l
+ls
+l
+rm -rf atlas_251117_171650/ atlas_251118_150208/
+ls
+rm -rf atlas_251117_205211 atlas_251118_152128 atlas_251118_151409 atlas_251117_205908 atlas_251118_152043
+rm -rf atlas_251118_145941
+rm -rf atlas_251118_152051
+clear
+ls
+clear
+cd 
+cd custom_scripts/
+ls
+clear
+l
+clear
+ls
+clear
+ls
+nano g5c1-launch-rgbd.sh 
+nano g5c2-launch-mono-imu.sh
+clear
+ls
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+clear
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+clear
+rm -rf build/orb_slam3_ros2_wrapper install/orb_slam3_ros2_wrapper log
+ls
+cd
+ls
+cd colcon_ws/
+ls
+rm -rf build/orb_slam3_ros2_wrapper install/orb_slam3_ros2_wrapper log
+colcon build --packages-select orb_slam3_ros2_wrapper
+clear
+colcon build --packages-select orb_slam3_ros2_wrapper
+rm -rf build/orb_slam3_ros2_wrapper install/orb_slam3_ros2_wrapper log
+clear
+colcon build --packages-select orb_slam3_ros2_wrapper
+rm -rf build/orb_slam3_ros2_wrapper install/orb_slam3_ros2_wrapper log
+rm -rf build/orb_slam3_ros2_wrapper install/orb_slam3_ros2_wrapper
+colcon build --packages-select orb_slam3_ros2_wrapper
+clear
+rm -rf build/orb_slam3_ros2_wrapper install/orb_slam3_ros2_wrapper
+colcon build --packages-select orb_slam3_ros2_wrapper
+cd
+cd custom_scripts/
+clear
+ls
+chmod +x g5c2-launch-mono-imu.sh 
+clear
+ls
+./g5c1-launch-rgbd.sh 
+cd
+cd /home/orb/ORB_SLAM3/
+./build.sh 
+cd
+cd colcon_ws/
+rm -rf build/orb_slam3_ros2_wrapper install/orb_slam3_ros2_wrapper
+colcon build --packages-select orb_slam3_ros2_wrapper
+cd
+cd custom_scripts/
+clear
+ls
+./g5c1-launch-rgbd.sh 
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+clear
+ls
+./g5c1-launch-rgbd.sh 
+cd /root/colcon_ws/ && colcon build --symlink-install && source install/setup.bash
+cd
+cd custom_scripts/
+clear
+ls
+./g5c1-launch-rgbd.sh 
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+./g5c1-launch-rgbd.sh 
+clear
+./g5c1-launch-rgbd.sh 
+clear
+ls
+clear
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+./g5c1-launch-rgbd.sh 
+clear
+ls
+./g5c2-launch-mono-imu.sh 
+ls
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+./g5c2-launch-mono-imu.sh 
+./g5c1-launch-rgbd.sh 
+clear
+./g5c2-launch-mono-imu.sh 
+clear
+ls
+./g5c2-launch-mono-imu.sh 
+clear
+ls
+cd colcon_ws/
+ls
+clear
+ls
+cd ..
+ls
+clear
+ls
+./g5c2-launch-mono-imu.sh 
+ls
+./g5c1-launch-rgbd.sh 
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+clear
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+clear
+./g5c2-launch-mono-imu.sh 
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+./g5c2-launch-mono-imu.sh 
+cd
+cd /home/orb/ORB_SLAM3/
+./build.sh 
+cd /root/colcon_ws/ && colcon build --symlink-install && source install/setup.bash
+clear
+cd
+cd custom_scripts/
+clear
+ls/
+ls
+./g5c2-launch-mono-imu.sh 
+ls
+cd colcon_ws/
+ls
+cd ..
+rm -rf colcon_ws/
+ls
+clear
+ls
+CLEAR
+./D1
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+clear
+ls
+./g5c2-launch-mono-imu.sh 
+./g5c1-launch-rgbd.sh 
+clear
+./g5c1-launch-rgbd.sh 
+clear
+./g5c1-launch-rgbd.sh 
+clear
+ls
+./g5c2-launch-mono-imu.sh 
+clear
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+ls
+./g5c2-launch-mono-imu.sh 
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+ls
+./g5c2-launch-mono-imu.sh 
+clear
+./g5c2-launch-mono-imu.sh 
+clear
+./g5c1-launch-rgbd.sh 
+clear
+./g5c1-launch-rgbd.sh 
+clear
+ls
+./g5c1-launch-rgbd.sh 
+cls
+clear
+ls
+clear
+ls
+cd colcon_ws/
+ls
+cd ..
+clear
+ls
+./g5c1-launch-rgbd.sh 
+ls
+./d1-rebuild-orb-slam3-ros2-wrapper.sh 
+./g5c1-launch-rgbd.sh 
+clear
+ls
+./g5c2-launch-mono-imu.sh 
+clear
+ls
+./g5c2-launch-mono-imu.sh 
+clear
+ls
+./g5c1-launch-rgbd.sh 
+ls
+./g5c1-launch-rgbd.sh 
+clear
+ls
+./g5c1-launch-rgbd.sh 
+clear

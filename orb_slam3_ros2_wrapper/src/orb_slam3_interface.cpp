@@ -472,6 +472,85 @@ namespace ORB_SLAM3_Wrapper
         bufMutex_.unlock();
     }
 
+    bool ORBSLAM3Interface::trackMonocularIMU(const sensor_msgs::msg::Image::SharedPtr msgRGB, Sophus::SE3f &Tcw)
+    {
+        orbAtlas_ = mSLAM_->GetAtlas();
+        cv_bridge::CvImageConstPtr cvRGB;
+        // Copy the ros rgb image message to cv::Mat.
+        try
+        {
+            cvRGB = cv_bridge::toCvShare(msgRGB);
+        }
+        catch (cv_bridge::Exception &e)
+        {
+            std::cerr << "cv_bridge exception RGB!" << endl;
+            return false;
+        }
+
+        vector<ORB_SLAM3::IMU::Point> vImuMeas;
+        bufMutex_.lock();
+        if (!imuBuf_.empty())
+        {
+            // Load imu measurements from buffer up to image timestamp
+            vImuMeas.clear();
+            while (!imuBuf_.empty() &&
+                   typeConversions_->stampToSec(imuBuf_.front()->header.stamp) <=
+                       typeConversions_->stampToSec(msgRGB->header.stamp))
+            {
+                double t = typeConversions_->stampToSec(imuBuf_.front()->header.stamp);
+                cv::Point3f acc(imuBuf_.front()->linear_acceleration.x, imuBuf_.front()->linear_acceleration.y, imuBuf_.front()->linear_acceleration.z);
+                cv::Point3f gyr(imuBuf_.front()->angular_velocity.x, imuBuf_.front()->angular_velocity.y, imuBuf_.front()->angular_velocity.z);
+                vImuMeas.push_back(ORB_SLAM3::IMU::Point(acc, gyr, t));
+                imuBuf_.pop();
+            }
+        }
+        else
+        {
+            std::cout << "DEBUG: IMU Buffer is empty!" << std::endl; 
+        }
+        bufMutex_.unlock();
+
+        if (vImuMeas.empty())
+        {
+            std::cout << "DEBUG: vImuMeas empty! Image Time: " << std::fixed << typeConversions_->stampToSec(msgRGB->header.stamp) << std::endl;
+            return false;
+        }
+
+        // track the frame.
+        Tcw = mSLAM_->TrackMonocular(cvRGB->image, typeConversions_->stampToSec(msgRGB->header.stamp), vImuMeas);
+        auto currentTrackingState = mSLAM_->GetTrackingState();
+        auto orbLoopClosing = mSLAM_->GetLoopClosing();
+        if (loopClosing_ && orbLoopClosing->mergeDetected())
+        {
+            // do not publish any values during map merging. This is because the reference poses change.
+            std::cout << "Waiting for merge to finish." << endl;
+            return false;
+        }
+        if (currentTrackingState == 2)
+        {
+            calculateReferencePoses();
+            correctTrackedPose(Tcw);
+            hasTracked_ = true;
+            return true;
+        }
+        else
+        {
+            switch (currentTrackingState)
+            {
+            case 0:
+                std::cerr << "ORB-SLAM failed: No images yet." << endl;
+                break;
+            case 1:
+                std::cerr << "ORB-SLAM failed: Not initialized." << endl;
+                break;
+            case 3:
+                std::cerr << "ORB-SLAM failed: Tracking LOST." << endl;
+                break;
+            }
+            return false;
+        }
+    }
+
     bool ORBSLAM3Interface::trackRGBDi(const sensor_msgs::msg::Image::SharedPtr msgRGB, const sensor_msgs::msg::Image::SharedPtr msgD, Sophus::SE3f &Tcw)
     {
         orbAtlas_ = mSLAM_->GetAtlas();

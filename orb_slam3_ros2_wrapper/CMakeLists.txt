@@ -64,6 +64,17 @@ add_executable(rgbd
 )
 ament_target_dependencies(rgbd rclcpp sensor_msgs cv_bridge message_filters ORB_SLAM3 Pangolin tf2_ros tf2_eigen slam_msgs pcl_ros pcl_conversions PCL nav_msgs std_srvs)
 
+# ----- MODIFIED 02: added this block for mono imu config -----
+add_executable(mono_imu
+  src/type_conversion.cpp
+  src/orb_slam3_interface.cpp
+  src/time_profiler.cpp
+  src/mono_imu/mono-imu-slam-node.cpp
+  src/mono_imu/mono_imu.cpp
+)
+ament_target_dependencies(mono_imu rclcpp sensor_msgs cv_bridge message_filters ORB_SLAM3 Pangolin tf2_ros tf2_eigen slam_msgs pcl_ros pcl_conversions PCL nav_msgs std_srvs)
+# ----- MODIFIED 02: added this block for mono imu config -----
+
 # add_executable(test1
 #   src/ft.cpp
 #   src/test_frame.cpp
@@ -75,11 +86,17 @@ target_link_libraries(rgbd ${PCL_LIBRARIES})
 install(TARGETS rgbd
   DESTINATION lib/${PROJECT_NAME})
 
+# ----- MODIFIED 02: added this block for mono imu config -----
+target_link_libraries(mono_imu ${PCL_LIBRARIES})
+install(TARGETS mono_imu
+  DESTINATION lib/${PROJECT_NAME})
+  # ----- MODIFIED 02: added this block for mono imu config -----
+
 install(DIRECTORY launch params
 DESTINATION share/${PROJECT_NAME}
 )
 
-# MODIFIED: added the below scripts to run in launch file
+# MODIFIED 01: added the below scripts to run in launch file
 install(PROGRAMS scripts/traj1_pose_gps_logger.py
 DESTINATION lib/${PROJECT_NAME}
 )
