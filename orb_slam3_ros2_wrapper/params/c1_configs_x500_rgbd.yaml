@@ -66,7 +66,7 @@ IMU.Frequency: 200   # Your IMU runs at 200 Hz
 
 # MODIFIED: Force the system to find more features and accept weaker features
 # nFeatures: chg to 3000 (Default 900)
-ORBextractor.nFeatures: 3000
+ORBextractor.nFeatures: 900
 
 # ORB Extractor: Scale factor between levels in the scale pyramid 	
 ORBextractor.scaleFactor: 1.2
