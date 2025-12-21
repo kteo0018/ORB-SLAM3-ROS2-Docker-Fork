@@ -1,0 +1,227 @@
+{
+  "example1.jpg": [
+    {
+      "center": [
+        316,
+        73
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        486,
+        70
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        488,
+        241
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        317,
+        243
+      ],
+      "radius": 7
+    }
+  ],
+  "example2.jpg": [
+    {
+      "center": [
+        152,
+        46
+      ],
+      "radius": 6
+    },
+    {
+      "center": [
+        326,
+        43
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        498,
+        39
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        499,
+        211
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        497,
+        381
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        327,
+        213
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        156,
+        217
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        157,
+        388
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        328,
+        384
+      ],
+      "radius": 7
+    }
+  ],
+  "example3.jpg": [
+    {
+      "center": [
+        153,
+        73
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        325,
+        70
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        499,
+        66
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        499,
+        239
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        326,
+        241
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        156,
+        244
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        158,
+        412
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        330,
+        409
+      ],
+      "radius": 7
+    },
+    {
+      "center": [
+        499,
+        406
+      ],
+      "radius": 7
+    }
+  ],
+  "example4.jpg": [
+    {
+      "center": [
+        155,
+        102
+      ],
+      "radius": 6
+    },
+    {
+      "center": [
+        325,
+        99
+      ],
+      "radius": 6
+    },
+    {
+      "center": [
+        497,
+        97
+      ],
+      "radius": 6
+    },
+    {
+      "center": [
+        499,
+        267
+      ],
+      "radius": 6
+    },
+    {
+      "center": [
+        328,
+        270
+      ],
+      "radius": 6
+    },
+    {
+      "center": [
+        157,
+        273
+      ],
+      "radius": 6
+    },
+    {
+      "center": [
+        161,
+        442
+      ],
+      "radius": 6
+    },
+    {
+      "center": [
+        329,
+        438
+      ],
+      "radius": 6
+    },
+    {
+      "center": [
+        500,
+        434
+      ],
+      "radius": 6
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "hough_params": {
+    "dp": 1,
+    "minDist": 15,
+    "param1": 50,
+    "param2": 18,
+    "minR": 2,
+    "maxR": 35
+  },
+  "radius_filter": [
+    6,
+    8
+  ],
+  "intensity_filter": [
+    95,
+    135
+  ],
+  "performance": {
+    "precision": 0.8571428571428571,
+    "recall": 0.5806451612903226,
+    "matched": 18,
+    "manual": 31,
+    "detected": 21,
+    "false_positives": 3
+  }
+}

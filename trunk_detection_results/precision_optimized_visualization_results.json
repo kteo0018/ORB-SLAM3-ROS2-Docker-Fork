@@ -1,0 +1,74 @@
+{
+  "parameters": {
+    "hough": {
+      "dp": 1,
+      "minDist": 15,
+      "param1": 50,
+      "param2": 18,
+      "minR": 2,
+      "maxR": 35
+    },
+    "radius_filter": [
+      6,
+      8
+    ],
+    "intensity_filter": [
+      95,
+      135
+    ],
+    "matching_distance": 15,
+    "matching_radius_tolerance": 3
+  },
+  "overall": {
+    "total_manual": 31,
+    "total_detected": 21,
+    "total_matched": 18,
+    "total_missed": 13,
+    "total_false_positives": 3,
+    "precision": 0.8571428571428571,
+    "recall": 0.5806451612903226,
+    "f1": 0.6923076923076923
+  },
+  "per_image": {
+    "example1.jpg": {
+      "manual": 4,
+      "detected": 2,
+      "matched": 2,
+      "missed": 2,
+      "false_positives": 0,
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666
+    },
+    "example2.jpg": {
+      "manual": 9,
+      "detected": 8,
+      "matched": 7,
+      "missed": 2,
+      "false_positives": 1,
+      "precision": 0.875,
+      "recall": 0.7777777777777778,
+      "f1": 0.823529411764706
+    },
+    "example3.jpg": {
+      "manual": 9,
+      "detected": 5,
+      "matched": 4,
+      "missed": 5,
+      "false_positives": 1,
+      "precision": 0.8,
+      "recall": 0.4444444444444444,
+      "f1": 0.5714285714285714
+    },
+    "example4.jpg": {
+      "manual": 9,
+      "detected": 6,
+      "matched": 5,
+      "missed": 4,
+      "false_positives": 1,
+      "precision": 0.8333333333333334,
+      "recall": 0.5555555555555556,
+      "f1": 0.6666666666666667
+    }
+  }
+}
