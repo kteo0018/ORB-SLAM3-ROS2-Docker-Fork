@@ -55,6 +55,33 @@ class Traj1PoseGpsLogger(Node):
                 self._gps_ref = (lat0, lon0, alt0)
         except Exception:
             self._gps_ref = None
+        
+        # GPS ENU offset to align with ground truth (initialized when ground truth becomes available)
+        self._gps_enu_offset: Optional[Tuple[float, float, float]] = None
+        self._first_gps_enu: Optional[Tuple[float, float, float]] = None  # Store first GPS ENU before offset
+        
+        # ORB-SLAM3 pose offset to align with ground truth (initialized when ground truth becomes available)
+        self._orb_slam3_pose_offset: Optional[Tuple[float, float, float]] = None
+        self._first_orb_slam3_pose: Optional[Tuple[float, float, float]] = None  # Store first ORB-SLAM3 pose before offset
+        
+        # Flag to track if both alignments are complete (GPS and ORB-SLAM3)
+        self._alignment_complete: bool = False
+
+        # Raw ORB-SLAM3 pose history (for detecting tracking resets / map restarts)
+        self._last_raw_orb_quat: Optional[Tuple[float, float, float, float]] = None
+        self._last_raw_orb_time: Optional[float] = None
+
+        # Alignment toggle: if false, logger writes raw ORB-SLAM3 and GPS poses without GT alignment
+        self.declare_parameter('use_alignment', False)
+        self._use_alignment: bool = bool(
+            self.get_parameter('use_alignment').get_parameter_value().bool_value
+        )
+
+        # Console logging toggle
+        self.declare_parameter('print_to_console', True)
+        self._print_to_console: bool = bool(
+            self.get_parameter('print_to_console').get_parameter_value().bool_value
+        )
 
         # QoS suitable for sensor streams
         qos = QoSProfile(
@@ -69,6 +96,14 @@ class Traj1PoseGpsLogger(Node):
         self._pose_file: Optional[TextIO] = None
         self._odom_file: Optional[TextIO] = None
         self._gps_file: Optional[TextIO] = None
+        
+        # Latest pose data for console output (stored as tuples: (timestamp, position, orientation))
+        self._latest_odom_data: Optional[Tuple[float, Tuple[float, float, float], Tuple[float, float, float, float]]] = None
+        self._latest_pose_data: Optional[Tuple[float, Tuple[float, float, float], Tuple[float, float, float, float]]] = None
+        self._latest_gps_data: Optional[Tuple[float, Tuple[float, float, float]]] = None
+        
+        # Throttling for console output (once per second for all poses together)
+        self._last_print_time: Optional[float] = None
 
         # Ensure directory exists
         os.makedirs(self._output_dir, exist_ok=True)
@@ -95,11 +130,83 @@ class Traj1PoseGpsLogger(Node):
         t = _stamp_to_float_sec(msg.header.stamp.sec, msg.header.stamp.nanosec)
         p = msg.pose.position
         q = msg.pose.orientation
-        line = f"{t:.9f} {p.x:.6f} {p.y:.6f} {p.z:.6f} {q.x:.6f} {q.y:.6f} {q.z:.6f} {q.w:.6f}\n"
+
+        # Cache raw orientation for possible reset detection
+        raw_q = (q.x, q.y, q.z, q.w)
+        self._last_raw_orb_quat = raw_q
+        self._last_raw_orb_time = t
+
+        # If alignment is disabled, just log raw ORB-SLAM3 poses
+        if not self._use_alignment:
+            line = (
+                f"{t:.9f} {p.x:.6f} {p.y:.6f} {p.z:.6f} "
+                f"{q.x:.6f} {q.y:.6f} {q.z:.6f} {q.w:.6f}\n"
+            )
+            with self._lock:
+                if self._pose_file is None:
+                    self._pose_file = open(
+                        os.path.join(self._output_dir, 'orb_slam3.tum'),
+                        'a',
+                        buffering=1,
+                    )
+                self._pose_file.write(line)
+                if self._print_to_console:
+                    self._latest_pose_data = (
+                        t,
+                        (p.x, p.y, p.z),
+                        (q.x, q.y, q.z, q.w),
+                    )
+                    self._try_print_all_poses(t)
+            return
+        
+        # Store first pose before offset for alignment when ground truth becomes available
+        if self._orb_slam3_pose_offset is None and self._first_orb_slam3_pose is None:
+            with self._lock:
+                self._first_orb_slam3_pose = (p.x, p.y, p.z)
+                # If ground truth is already available, initialize offset immediately
+                if self._latest_odom_data is not None:
+                    _, gt_pos, _ = self._latest_odom_data
+                    self._orb_slam3_pose_offset = (
+                        gt_pos[0] - p.x,
+                        gt_pos[1] - p.y,
+                        gt_pos[2] - p.z,
+                    )
+                    self.get_logger().info(
+                        "Aligned ORB-SLAM3 pose with ground truth: "
+                        f"offset=({self._orb_slam3_pose_offset[0]:.3f}, "
+                        f"{self._orb_slam3_pose_offset[1]:.3f}, "
+                        f"{self._orb_slam3_pose_offset[2]:.3f})"
+                    )
+                    # Check if both alignments are now complete
+                    if (
+                        not self._alignment_complete
+                        and self._gps_enu_offset is not None
+                    ):
+                        self._alignment_complete = True
+                        self.get_logger().info(
+                            "Alignment complete - both GPS and ORB-SLAM3 aligned. "
+                            "Starting to log TUM files."
+                        )
+        
+        # Apply offset to align with ground truth (only if offset has been initialized)
+        px, py, pz = p.x, p.y, p.z
+        if self._orb_slam3_pose_offset is not None:
+            px += self._orb_slam3_pose_offset[0]
+            py += self._orb_slam3_pose_offset[1]
+            pz += self._orb_slam3_pose_offset[2]
+        
+        # Only write to file after alignment is complete
         with self._lock:
-            if self._pose_file is None:
-                self._pose_file = open(os.path.join(self._output_dir, 'orb_slam3.tum'), 'a', buffering=1)
-            self._pose_file.write(line)
+            if self._alignment_complete:
+                line = f"{t:.9f} {px:.6f} {py:.6f} {pz:.6f} {q.x:.6f} {q.y:.6f} {q.z:.6f} {q.w:.6f}\n"
+                if self._pose_file is None:
+                    self._pose_file = open(os.path.join(self._output_dir, 'orb_slam3.tum'), 'a', buffering=1)
+                self._pose_file.write(line)
+            
+            # Store latest pose data for console output (with offset applied if available)
+            if self._print_to_console:
+                self._latest_pose_data = (t, (px, py, pz), (q.x, q.y, q.z, q.w))
+                self._try_print_all_poses(t)
 
     def _on_odom(self, msg: Odometry) -> None:
         if self._paused:
@@ -112,6 +219,51 @@ class Traj1PoseGpsLogger(Node):
             if self._odom_file is None:
                 self._odom_file = open(os.path.join(self._output_dir, 'ground_truth.tum'), 'a', buffering=1)
             self._odom_file.write(line)
+            # Store latest odom data for console output
+            if self._print_to_console:
+                self._latest_odom_data = (t, (p.x, p.y, p.z), (q.x, q.y, q.z, q.w))
+
+            # If alignment is disabled, no offset or alignment bookkeeping is needed
+            if not self._use_alignment:
+                if self._print_to_console:
+                    self._try_print_all_poses(t)
+                return
+
+            # Initialize offsets when ground truth first becomes available
+            gt_pos = (p.x, p.y, p.z)
+            
+            # Initialize ORB-SLAM3 pose offset if we have stored first pose
+            if self._orb_slam3_pose_offset is None and self._first_orb_slam3_pose is not None:
+                self._orb_slam3_pose_offset = (
+                    gt_pos[0] - self._first_orb_slam3_pose[0],
+                    gt_pos[1] - self._first_orb_slam3_pose[1],
+                    gt_pos[2] - self._first_orb_slam3_pose[2]
+                )
+                self.get_logger().info(
+                    f"Aligned ORB-SLAM3 pose with ground truth: offset=({self._orb_slam3_pose_offset[0]:.3f}, "
+                    f"{self._orb_slam3_pose_offset[1]:.3f}, {self._orb_slam3_pose_offset[2]:.3f})"
+                )
+            
+            # Initialize GPS ENU offset if we have stored first GPS ENU
+            if self._gps_enu_offset is None and self._first_gps_enu is not None:
+                self._gps_enu_offset = (
+                    gt_pos[0] - self._first_gps_enu[0],
+                    gt_pos[1] - self._first_gps_enu[1],
+                    gt_pos[2] - self._first_gps_enu[2]
+                )
+                self.get_logger().info(
+                    f"Aligned GPS ENU with ground truth: offset=({self._gps_enu_offset[0]:.3f}, "
+                    f"{self._gps_enu_offset[1]:.3f}, {self._gps_enu_offset[2]:.3f})"
+                )
+            
+            # Check if both alignments are complete
+            if not self._alignment_complete:
+                if self._orb_slam3_pose_offset is not None and self._gps_enu_offset is not None:
+                    self._alignment_complete = True
+                    self.get_logger().info("Alignment complete - both GPS and ORB-SLAM3 aligned. Starting to log TUM files.")
+            
+            if self._print_to_console:
+                self._try_print_all_poses(t)
 
     def _on_gps(self, msg: NavSatFix) -> None:
         if self._paused or not self._write_gps_tum:
@@ -123,14 +275,120 @@ class Traj1PoseGpsLogger(Node):
         if self._gps_ref is None:
             self._gps_ref = (lat, lon, alt)
             self.get_logger().info(f"Initialized GPS ENU reference: lat={lat:.8f}, lon={lon:.8f}, alt={alt:.3f}")
+        
         x, y, z = self._geodetic_to_enu(lat, lon, alt, *self._gps_ref)
+
         # Use message header timestamp if available
         t = _stamp_to_float_sec(msg.header.stamp.sec, msg.header.stamp.nanosec)
-        line = f"{t:.9f} {x:.6f} {y:.6f} {z:.6f} 0.000000 0.000000 0.000000 1.000000\n"
+
+        # If alignment is disabled, log ENU GPS directly without GT alignment
+        if not self._use_alignment:
+            line = (
+                f"{t:.9f} {x:.6f} {y:.6f} {z:.6f} "
+                "0.000000 0.000000 0.000000 1.000000\n"
+            )
+            with self._lock:
+                if self._gps_file is None:
+                    self._gps_file = open(
+                        os.path.join(self._output_dir, 'gps_navsat.tum'),
+                        'a',
+                        buffering=1,
+                    )
+                self._gps_file.write(line)
+                if self._print_to_console:
+                    self._latest_gps_data = (t, (x, y, z))
+                    self._try_print_all_poses(t)
+            return
+
+        # Store first GPS ENU before offset for alignment when ground truth becomes available
+        if self._gps_enu_offset is None and self._first_gps_enu is None:
+            with self._lock:
+                self._first_gps_enu = (x, y, z)
+                # If ground truth is already available, initialize offset immediately
+                if self._latest_odom_data is not None:
+                    _, gt_pos, _ = self._latest_odom_data
+                    self._gps_enu_offset = (
+                        gt_pos[0] - x,
+                        gt_pos[1] - y,
+                        gt_pos[2] - z,
+                    )
+                    self.get_logger().info(
+                        "Aligned GPS ENU with ground truth: "
+                        f"offset=({self._gps_enu_offset[0]:.3f}, "
+                        f"{self._gps_enu_offset[1]:.3f}, "
+                        f"{self._gps_enu_offset[2]:.3f})"
+                    )
+                    # Check if both alignments are now complete
+                    if (
+                        not self._alignment_complete
+                        and self._orb_slam3_pose_offset is not None
+                    ):
+                        self._alignment_complete = True
+                        self.get_logger().info(
+                            "Alignment complete - both GPS and ORB-SLAM3 aligned. "
+                            "Starting to log TUM files."
+                        )
+
+        # Apply offset to align with ground truth (only if offset has been initialized)
+        if self._gps_enu_offset is not None:
+            x += self._gps_enu_offset[0]
+            y += self._gps_enu_offset[1]
+            z += self._gps_enu_offset[2]
+
+        # Only write to file after alignment is complete
         with self._lock:
-            if self._gps_file is None:
-                self._gps_file = open(os.path.join(self._output_dir, 'gps_navsat.tum'), 'a', buffering=1)
-            self._gps_file.write(line)
+            if self._alignment_complete:
+                line = (
+                    f"{t:.9f} {x:.6f} {y:.6f} {z:.6f} "
+                    "0.000000 0.000000 0.000000 1.000000\n"
+                )
+                if self._gps_file is None:
+                    self._gps_file = open(
+                        os.path.join(self._output_dir, 'gps_navsat.tum'),
+                        'a',
+                        buffering=1,
+                    )
+                self._gps_file.write(line)
+
+            # Store latest GPS data for console output
+            if self._print_to_console:
+                self._latest_gps_data = (t, (x, y, z))
+                self._try_print_all_poses(t)
+
+    def _try_print_all_poses(self, current_time: float) -> None:
+        """Print all poses together with a header if 1 second has passed."""
+        if not self._print_to_console:
+            return
+        
+        # Check if 1 second has passed since last print
+        if self._last_print_time is None or (current_time - self._last_print_time) >= 1.0:
+            # Print header
+            self.get_logger().info("--------")
+            
+            # Print ground truth pose (odom)
+            if self._latest_odom_data is not None:
+                t, pos, quat = self._latest_odom_data
+                self.get_logger().info(
+                    f"Ground truth pose @ {t:.2f}s -> pos=({pos[0]:.3f},{pos[1]:.3f},{pos[2]:.3f}) "
+                    f"quat=({quat[0]:.3f},{quat[1]:.3f},{quat[2]:.3f},{quat[3]:.3f})"
+                )
+            
+            # Print ORB-SLAM pose
+            if self._latest_pose_data is not None:
+                t, pos, quat = self._latest_pose_data
+                self.get_logger().info(
+                    f"ORB-SLAM pose @ {t:.2f}s -> pos=({pos[0]:.3f},{pos[1]:.3f},{pos[2]:.3f}) "
+                    f"quat=({quat[0]:.3f},{quat[1]:.3f},{quat[2]:.3f},{quat[3]:.3f})"
+                )
+            
+            # Print GPS pose
+            if self._latest_gps_data is not None:
+                t, pos = self._latest_gps_data
+                self.get_logger().info(
+                    f"GPS pose @ {t:.2f}s -> pos=({pos[0]:.3f},{pos[1]:.3f},{pos[2]:.3f}) in ENU"
+                )
+            
+            self._last_print_time = current_time
 
     def _on_command(self, msg: StringMsg) -> None:
         cmd = (msg.data or '').strip().lower()

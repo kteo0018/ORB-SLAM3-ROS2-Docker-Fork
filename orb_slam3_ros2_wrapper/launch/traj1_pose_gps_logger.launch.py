@@ -14,6 +14,7 @@ def generate_launch_description() -> LaunchDescription:
                 'pose_topic': '/robot/robot_pose_slam',
                 'gps_topic': '/world/z_simple_palm_plantation/model/x500_custom_0/link/gps_link/sensor/gps/navsat',
                 'odometry_topic': '/model/x500_custom_0/odometry_with_covariance',
+                'print_to_console': True,
             }]
         )
     ])

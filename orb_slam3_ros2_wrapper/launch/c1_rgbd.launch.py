@@ -19,7 +19,7 @@ import time, os
 CONFIG_FILE = "c1_configs_x500_rgbd"
 PARAM_FILE = "c1-params-x500-rgbd"
 # Create timestamped directory for atlas saving
-timestamp_dir = f"/root/colcon_ws/atlas_{time.strftime('%y%m%d_%H%M%S')}"
+timestamp_dir = f"/root/colcon_ws/atlas_map_saved/atlas_{time.strftime('%y%m%d_%H%M%S')}"
 os.makedirs(timestamp_dir, exist_ok=True)
 
 def generate_launch_description():
