@@ -7,8 +7,9 @@ Camera.type: "PinHole"
 
 # Camera calibration and distortion parameters (OpenCV) 
 # MODIFIED for x500_custom model with 640x480 camera (from rgbd_link intrinsics)
-Camera.fx: 457.0075938466084
-Camera.fy: 457.00759384660836
+# MODIFIED: Updated from camera_info topic (fx and fy should be equal for square pixels)
+Camera.fx: 319.9988245765257
+Camera.fy: 319.99882457652575
 Camera.cx: 320.0
 Camera.cy: 240.0
 
