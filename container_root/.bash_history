@@ -909,3 +909,4 @@ clear
 ls
 ./g5c1-launch-rgbd.sh 
 clear
+exit

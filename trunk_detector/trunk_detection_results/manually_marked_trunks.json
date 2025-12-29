@@ -2,224 +2,159 @@
   "example1.jpg": [
     {
       "center": [
-        316,
+        314,
         73
       ],
-      "radius": 7
+      "radius": 6
     },
     {
       "center": [
         486,
         70
       ],
-      "radius": 7
+      "radius": 6
     },
     {
       "center": [
-        488,
-        241
-      ],
-      "radius": 7
-    },
-    {
-      "center": [
-        317,
-        243
-      ],
-      "radius": 7
-    }
-  ],
-  "example2.jpg": [
-    {
-      "center": [
-        152,
-        46
+        487,
+        239
       ],
       "radius": 6
     },
     {
       "center": [
-        326,
-        43
+        317,
+        242
       ],
-      "radius": 7
-    },
+      "radius": 6
+    }
+  ],
+  "example2.jpg": [
     {
       "center": [
-        498,
-        39
+        499,
+        380
       ],
-      "radius": 7
+      "radius": 6
     },
     {
       "center": [
         499,
         211
       ],
-      "radius": 7
+      "radius": 6
     },
     {
       "center": [
         497,
-        381
+        41
       ],
-      "radius": 7
+      "radius": 6
+    },
+    {
+      "center": [
+        326,
+        42
+      ],
+      "radius": 6
+    },
+    {
+      "center": [
+        152,
+        45
+      ],
+      "radius": 6
+    },
+    {
+      "center": [
+        155,
+        217
+      ],
+      "radius": 6
     },
     {
       "center": [
         327,
-        213
+        214
       ],
-      "radius": 7
-    },
-    {
-      "center": [
-        156,
-        217
-      ],
-      "radius": 7
-    },
-    {
-      "center": [
-        157,
-        388
-      ],
-      "radius": 7
+      "radius": 6
     },
     {
       "center": [
         328,
-        384
+        382
       ],
-      "radius": 7
+      "radius": 6
+    },
+    {
+      "center": [
+        158,
+        386
+      ],
+      "radius": 6
     }
   ],
   "example3.jpg": [
     {
       "center": [
-        153,
-        73
+        154,
+        71
       ],
-      "radius": 7
-    },
-    {
-      "center": [
-        325,
-        70
-      ],
-      "radius": 7
-    },
-    {
-      "center": [
-        499,
-        66
-      ],
-      "radius": 7
-    },
-    {
-      "center": [
-        499,
-        239
-      ],
-      "radius": 7
+      "radius": 6
     },
     {
       "center": [
         326,
-        241
-      ],
-      "radius": 7
-    },
-    {
-      "center": [
-        156,
-        244
-      ],
-      "radius": 7
-    },
-    {
-      "center": [
-        158,
-        412
-      ],
-      "radius": 7
-    },
-    {
-      "center": [
-        330,
-        409
-      ],
-      "radius": 7
-    },
-    {
-      "center": [
-        499,
-        406
-      ],
-      "radius": 7
-    }
-  ],
-  "example4.jpg": [
-    {
-      "center": [
-        155,
-        102
+        69
       ],
       "radius": 6
     },
     {
       "center": [
-        325,
-        99
-      ],
-      "radius": 6
-    },
-    {
-      "center": [
-        497,
-        97
+        498,
+        67
       ],
       "radius": 6
     },
     {
       "center": [
         499,
-        267
+        237
       ],
       "radius": 6
     },
     {
       "center": [
         328,
-        270
+        240
       ],
       "radius": 6
     },
     {
       "center": [
         157,
-        273
+        243
       ],
       "radius": 6
     },
     {
       "center": [
-        161,
-        442
+        160,
+        412
       ],
       "radius": 6
     },
     {
       "center": [
         329,
-        438
+        409
       ],
       "radius": 6
     },
     {
       "center": [
-        500,
-        434
+        499,
+        406
       ],
       "radius": 6
     }
