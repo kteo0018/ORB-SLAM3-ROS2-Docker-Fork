@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 import json
 import os
+from datetime import datetime
 
 # Load best precision-optimized config
 def load_best_config():
@@ -41,14 +42,41 @@ FINAL_PARAMS = {
     "matching_radius_tolerance": 3
 }
 
-def load_manual_trunks():
+def load_manual_trunks(json_path=None):
     """Load manually marked trunks"""
-    json_path = "trunk_detection_results/manually_marked_trunks.json"
+    if json_path is None:
+        # Try to find the most recent manually_marked_trunks file
+        results_dir = "trunk_detection_results"
+        if os.path.exists(results_dir):
+            json_files = [f for f in os.listdir(results_dir) if f.startswith("manually_marked_trunks") and f.endswith(".json")]
+            if json_files:
+                # Sort by modification time, get most recent
+                json_files.sort(key=lambda f: os.path.getmtime(os.path.join(results_dir, f)), reverse=True)
+                json_path = os.path.join(results_dir, json_files[0])
+            else:
+                json_path = os.path.join(results_dir, "manually_marked_trunks.json")
+        else:
+            json_path = "trunk_detection_results/manually_marked_trunks.json"
+    
     if not os.path.exists(json_path):
         print(f"Error: {json_path} not found")
+        print(f"Please specify the JSON file path or run interactive_trunk_marker.py first")
         return None
+    
     with open(json_path, 'r') as f:
-        return json.load(f)
+        data = json.load(f)
+    
+    # Handle both old format (direct dict) and new format (with metadata)
+    if "trunks" in data:
+        # New format with metadata
+        return data["trunks"], data.get("metadata", {})
+    elif "metadata" in data:
+        # Has metadata but trunks might be at root level
+        trunks = {k: v for k, v in data.items() if k != "metadata"}
+        return trunks, data.get("metadata", {})
+    else:
+        # Old format - return as-is with empty metadata
+        return data, {}
 
 def detect_trunks(image_path):
     """Detect trunks with precision-optimized parameters"""
@@ -203,16 +231,52 @@ def visualize_results(image, detected, manual, matches, missed_indices, false_po
 
 def main():
     """Main visualization function"""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Visualize trunk detection results')
+    parser.add_argument('--json-file', type=str, default=None,
+                       help='Path to manually marked trunks JSON file (default: auto-detect)')
+    parser.add_argument('--image-dir', type=str, default=None,
+                       help='Directory containing images (default: from JSON metadata or example_rgb_images)')
+    parser.add_argument('--output-dir', type=str, default='trunk_detection_results',
+                       help='Directory to save visualization results')
+    
+    args = parser.parse_args()
+    
     print("="*80)
     print("Precision-Optimized Solution Visualization")
     print("="*80)
     
     # Load manual trunks
-    manual_trunks = load_manual_trunks()
+    manual_trunks, metadata = load_manual_trunks(args.json_file)
     if manual_trunks is None:
         return
     
-    image_dir = "example_rgb_images"
+    # Determine image directory
+    if args.image_dir:
+        image_dir = args.image_dir
+    elif metadata and "image_directory" in metadata:
+        image_dir = metadata["image_directory"]
+        # If it's an absolute path, use it; otherwise try relative
+        if not os.path.exists(image_dir):
+            # Try relative to current directory
+            rel_dir = os.path.basename(image_dir)
+            if os.path.exists(rel_dir):
+                image_dir = rel_dir
+    else:
+        # Try common directories
+        for dir_name in ["example_rgb_images_fov157", "example_rgb_images"]:
+            if os.path.exists(dir_name):
+                image_dir = dir_name
+                break
+        else:
+            image_dir = "example_rgb_images"
+    
+    print(f"\nUsing image directory: {image_dir}")
+    print(f"Dataset: {metadata.get('dataset_name', 'unknown')}")
+    print(f"Total trunks marked: {metadata.get('total_trunks', 'unknown')}")
+    
+    os.makedirs(args.output_dir, exist_ok=True)
     os.makedirs("trunk_detection_results", exist_ok=True)
     
     print(f"\nParameters:")
@@ -283,7 +347,8 @@ def main():
                 print(f"    FP#{idx+1}: center=({dx}, {dy}), radius={dr}")
         
         # Visualize
-        output_path = f"trunk_detection_results/{img_file.replace('.jpg', '_precision_optimized.jpg')}"
+        base_name = os.path.splitext(img_file)[0]
+        output_path = os.path.join(args.output_dir, f"{base_name}_precision_optimized.jpg")
         visualize_results(image, detected, manual_list, matches, missed_indices,
                          false_positive_indices, output_path)
         print(f"  Saved visualization to: {output_path}")
@@ -331,7 +396,9 @@ def main():
         print("\n⚠ Precision could be improved.")
     
     # Save results
-    results_path = "trunk_detection_results/precision_optimized_visualization_results.json"
+    dataset_name = metadata.get('dataset_name', 'unknown')
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    results_path = os.path.join(args.output_dir, f"precision_optimized_visualization_{dataset_name}_{timestamp}.json")
     with open(results_path, 'w') as f:
         json.dump({
             "parameters": FINAL_PARAMS,
