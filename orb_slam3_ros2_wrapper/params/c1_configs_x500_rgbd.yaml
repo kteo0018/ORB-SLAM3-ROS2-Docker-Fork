@@ -25,19 +25,19 @@ Camera.width: 640
 Camera.height: 480
 
 # Camera frames per second 
-Camera.fps: 30.0
+Camera.fps: 60.0
 
 # IR projector baseline times fx (aprox.)
 Camera.bf: 37.0
 
 # Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
-Camera.RGB: 1
+Camera.RGB: 0  # 0 for Offline (PNG Images), 1 for ROS_bag
 
 # Close/Far threshold. Baseline times.
 ThDepth: 40.0
 
 # Deptmap values factor 
-DepthMapFactor: 1.0 # 1.0 for ROS_bag
+DepthMapFactor: 1000.0 # 1000.0 for Offline (PNG Images), 1.0 for ROS_bag
 
 # Transformation from camera 0 to body-frame (imu)
 Tbc: !!opencv-matrix

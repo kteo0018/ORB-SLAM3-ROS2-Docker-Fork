@@ -17,6 +17,9 @@ services:
       - ./orb_slam3_map_generator/:/root/colcon_ws/src/orb_slam3_map_generator/
       - ./slam_msgs/:/root/colcon_ws/src/slam_msgs/
       - ./ORB_SLAM3/:/home/orb/ORB_SLAM3/
+      #datasets and helpers
+      - ./s1_gz_dataset/:/root/s1_gz_dataset/
+      - ./s2_slam_results/:/root/s2_slam_results/
     privileged: true
     network_mode: host
     ipc: host

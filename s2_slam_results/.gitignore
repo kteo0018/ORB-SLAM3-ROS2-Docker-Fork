@@ -1,0 +1,6 @@
+*.txt
+*.tum
+gz_*/
+example*
+aggregated_evo_results/
+backup*
